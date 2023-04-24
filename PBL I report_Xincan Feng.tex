@@ -1,0 +1,192 @@
+\documentclass[9pt]{ctexart}
+\usepackage[T1]{fontenc}
+%\usepackage[spanish]{babel} 
+%\spanishdecimal{.}
+\usepackage[utf8]{inputenc}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{amsmath,amsthm,amsfonts,amssymb,amscd}
+\usepackage{multirow,booktabs}
+\usepackage[table,dvipsnames]{xcolor}
+\usepackage{fullpage}
+\usepackage{lastpage}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{mathrsfs}
+\usepackage{wrapfig}
+\usepackage{setspace}
+\usepackage{calc}
+\usepackage{multicol}
+\usepackage{cancel}
+\usepackage[retainorgcmds]{IEEEtrantools}
+\usepackage[left=1.8cm,right=1.8cm,top=2cm,bottom=3cm]{geometry}
+\usepackage{floatrow}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=BlueViolet,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    citecolor=green,
+    citebordercolor=0 0 1,
+    filebordercolor=0 .5 .5,
+    linkbordercolor=1 0 0,
+    menubordercolor=1 0 0,
+    urlbordercolor=0 1 1,
+    }
+\urlstyle{same}
+\DeclareMathOperator\argmin{argmin}
+\DeclareMathOperator\eg{e.g.}
+\DeclareMathOperator\ie{i.e.}
+\DeclareMathOperator\R{\mathbb{R}}
+\DeclareMathOperator\Fourier{Fourier}
+\newlength{\tabcont}
+\setlength{\parindent}{0.0in}
+\setlength{\parskip}{0.05in}
+\theoremstyle{definition}
+\newtheorem{defn}{Definición}
+\newtheorem{reg}{Regla}
+\newtheorem{ejer}{EJERCICIO}
+% \pagestyle{fancyplain}
+% \headheight 16pt
+% \newcommand\course{link prediction}	
+% \lhead{\course}
+% \chead{\textbf{related researches}}
+% \rhead{Xincan FENG}
+%---------------cheat sheet---------------
+%\begin{itemize}
+%\item 
+%\begin{vmatrix}
+%1& 1 & 0&0\\ 
+%0& 0 & 1&1\\ 
+%1& 0 & 1&0\\
+%0& 1 & 1&1
+%\end{vmatrix}$\\
+%\item $\vec{B}= \left\lbrace\ \begin{bmatrix}
+%1& 1\\ 
+%0& 0
+%\end{bmatrix},\begin{bmatrix}
+%0& 1\\ 
+%1& 1
+%\end{bmatrix}\right\rbrace\ $
+%\end{itemize}
+%---------------cheat sheet---------------
+\begin{document}
+\twocolumn[
+\begin{center}
+{\LARGE\textbf{Dimension Problem in Knowledge Graph Embedding}}\\
+\bigskip
+{\Large Xincan Feng, Hiroyuki Shindo, Yuchang Cheng, \\Taro Watanabe, Nobuhiro Yugami}
+\end{center}
+\vspace{1.8cm}
+]
+
+\section{Abstract}
+Knowledge graph embedding (KGE) models have been a popular approach to do link prediction task for knowledge graph completion (KGC).
+KGE models first choose a representation method, then employ a transformation function to map nodes via edges into a corresponding vector space in order to measure the likelihood of the links.
+While mapping the individual nodes, the structure of the subgraphs is also transformed.
+In order to make the KGE models more expressive, researchers are using more and more sophisticated representations, spaces and transformation functions.\\
+However, as those become more complicated, it becomes harder for researchers to distinguish the redundancy of their models.
+Our research proposed a dimension restriction method to reduce the redundancy in Complex KGE models.
+To our knowledge, no investigation has explicitly focused on the relational nature in knowlege graphs in the aspect of relational dimensions.
+Our research has verified and demonstrated the relational nature of dimensions in one of the KGE models: the $5^{\bigstar}\mathrm{E}$ model
+\hyperlink{Nay21}{(Nayyeri et al. 2021).}
+Specifically, we proposed conjugate method to add restriction in the dimensions of parameters matrix, so that to reduce the calculation and learning cost while receiving comparable performance.
+
+\section{Introduction}
+Knowledge graphs (KGs) with their graph-based knowledge representation in the form of (head, relation, tail) triples, have become a leading technology of recent years in AI-based tasks including question answering, data integration, and recommender systems 
+\hyperlink{JiS20}{(Ji et al. 2020).} 
+However, KGs are incomplete, and the application consuming them is affected by this problem.
+Knowledge graph embedding (KGE) is a prominent approach used for knowledge graph completion (KGC) by predicting missing links.
+
+Every KGE model defines a specific represention, and uses a transformation function to map entities (nodes) of the KG through relations into a corresponding vector space, and then calculate the plausibility of triples via a corresponding score function.
+Thus, there are three main directions in improving the KGE models: representations, vector spaces, and transformation functions.
+\textbf{We can generally conclude that:}\\
+(i) Compared with real number representation, the composition of complex number can handle a large variety of binary relations, among them symmetric and antisymmetric relations
+\hyperlink{Tro16}{(Trouillon et al. 2016).}\\
+(ii) Compared with Euclidean space, the Hyperbolic space models can save more structures using fixed or trainable curvatures in different positions for hierarchical relations
+\hyperlink{Cha20}{(Chami et al. 2020).}\\
+(iii) Compared with naive addition or multiplication transformation functions, more specific designed addition, multiplication and their composition, including projective geometric functions, 
+support multiple simultaneous transformations, and are more capable to represent multiple structures in the multi-relational knowledge graphs.
+
+The transformation functions distinguish the extent to which a KGE model is able to learn complicated motifs and patterns formed by combinations of the nodes and edges.
+While all transformation functions first rest on the representation methods in different spaces.
+Dimensions, which are the base of the representation methods and vector spaces, are the fundamental base of the transformation functions' capabilities.
+
+\textbf{Our intuitions are that:}\\ 
+(i) The increased performance from real number representation to complex number representation, which enables the imaginary and real part dimensions to be \textbf{relational}, indicates the \textbf{hidden relations} between parameter dimensions.\\
+(ii) The increased performance from Euclidean space to Hyperbolic space, which enables the distances or angles of \textbf{different positions} to vary in different degrees, indicates \textbf{different positions} in the parameter dimensions have different degrees of freedom. 
+Or rather, the fixed or trainable curvatures in Hyperbolic embeddings can learn uneven information to affect the link plausibility result. The uneven parameter dimensions is capable to do that too.
+
+The \textbf{"degree of freedom" or call it "restriction" methods on dimensions}, are similar to \textbf{"attention" or "weight" methods on parameters}
+\hyperlink{Vas17}{(Vaswani et al. 2017).}
+They all explore the \textbf{"relationship problem"} among the feature parameters of the data.\\
+Nonetheless, profoundly speaking, the "restriction" on dimensions wins in that it goes deeper to the root of the "relationship problem", thus is possible to be more effective by reducing the calculation and learning cost.
+Concretely speaking, the transformation functions degined in all kinds of representation methods and space, could be \textbf{redundant}.
+
+\section{Related work}
+KGE models that are classified according to their representation methods:\\
+\textbf{Real embeddings:} Translation approaches include TransE 
+\hyperlink{Bor13}{(Bordes et al. 2013)} 
+and its variants 
+(\hyperlink{Jie15}{Ji et al. 2015}, 
+\hyperlink{Lin15}{Lin et al. 2015}).
+Although these models are fairly simple and have few parameters, they fail to encode important logical properties (e.g., translations can't encode symmetry).\\
+\textbf{Complex embeddings:} ComplEx \hyperlink{Tro16}{(Trouillon et al. 2016)} gives a clear comparison with respect to existing approaches using only real numbers by presenting an equivalent reformulation of their model that involves only real embeddings.
+RotatE \hyperlink{Sun19}{(Sun et al. 2019)} does require additional optimization component to effectively draw negative samples for training.
+$5^{\bigstar}\mathrm{E}$ 
+\hyperlink{Nay21}{(Nayyeri et al. 2021)}
+uses Möbius transformation as the transformation function, which is the composition of four functions that can represent five transformations. 
+However, the parameters usage and the cooperation among parameters in its theoretical analysis are not even. 
+The complex parameters $a, b, c, d$ are used twice, once, four times and once respectively.
+$c$ cooperates the most with other parameters, whereas $b$ cooperates the least.
+
+KGE models that are classified according to their vector spaces:\\
+\textbf{Euclidean embeddings:} Tensor factorization methods such as RESCAL 
+\hyperlink{Nic11}{(Nickel et al. 2011)} 
+and DistMult 
+\hyperlink{Yan15}{(Yang et al. 2015)}
+are designed based on element-wise multiplication of transformed head and tail. 
+In this case, the plausibility of triples is measured based on the angle of transformed head and tail.\\
+\textbf{Hyperbolic embeddings:} MuRP 
+\hyperlink{Bal19}{(Balazevic et al. 2019)}
+minimizes hyperbolic distances between a re-scaled version of the head entity embedding and a translation of the tail entity embedding. 
+It uses hyperbolic embeddings with fewer dimensions than its Euclidean analogues.
+ATTH 
+\hyperlink{Cha20}{(Chami et al. 2020)}
+leverages trainable hyperbolic curvatures per relationship to simultaneously capture logical patterns and hierarchies.
+However, it also needs optimization methods in tangent space (i.e., Euclidean).
+
+\section{Method}
+Our hypothesis is that: The transformation functions of Complex and Hyperbolic embeddings are possibly to be improved in efficiency by dimension restriction methods.\\ 
+Their performance has already shown improvement compared to Real and Euclidean embeddings by setting relational restrictions in specific positions of the transformation function parameters.
+Our goal is to find out if there exists redundancy in the transformation function capabilities.
+
+The method that we have varified validity is conjugate methods.
+
+\section{References}
+\hypertarget{Nay21}{Nayyeri M.; Vahdati S.; Aykul C.; and Lehmann J. 5$^\bigstar$ Knowledge Graph Embeddings with Projective Transformations. in AAAI. 2021}
+
+\hypertarget{JiS20}{Ji S.; Pan S.; Cambria E.; Marttinen P.; and Yu P. S. A survey on knowledge graphs: Representation, acquisition and applications. arXiv:2002.00388. 2020}
+
+\hypertarget{Tro16}{Trouillon T.; Welbl J.; Riedel S.; Gaussier É.; and Bouchard G. Complex embeddings for simple link prediction. In International Conference on Machine Learning, 2071-2080. 2016}
+
+\hypertarget{Cha20}{Chami I.; Wolf A.; Juan D.-C.; Sala F.; Ravi S.; and Ré C. Low-Dimensional Hyperbolic Knowledge Graph Embeddings. In Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics, 6901-6914. 2020}
+
+\hypertarget{Vas17}{Vaswani A.; Shazeer N.; Parmar N.; Uszkoreit J.; Jones L.; Gomez A. N.; Kaiser L.; Polosukhin I. Attention Is All You Need. arXiv:1706.03762v5. 2017}
+
+\hypertarget{Sun19}{Sun Z.-Q.; Deng Z.-H.; Nie J.-Y.; and Tang J. Rotate: Knowledge graph embedding by relational rotation in complex space. In International Conference on Learning Representations. 2019}
+
+\hypertarget{Bor13}{Bordes A.; Usunier N.; Garcia-Duran A.; Weston J.; and Yakhnenko O. Translating embeddings for modeling multi-relational data. In Advances in neural information processing systems, 2787–2795. 2013}
+
+\hypertarget{Jie15}{Ji G.; He S.; Xu L.; Liu K.; and Zhao J. Knowledge graph embedding via dynamic mapping matrix. In Proceedings of the 53rd Annual Meeting of the Association for Computational Linguistics and the 7th International Joint Conference on Natural Language Processing (Volume 1: Long Papers), 687-696. 2015}
+
+\hypertarget{Lin15}{Lin Y.; Liu Z.; Sun M.; Liu Y.; and Zhu X. Learning entity and relation embeddings for knowledge graph completion. In Twenty-ninth AAAI conference on artificial intelligence. 2015}
+
+\hypertarget{Nic11}{Nickel M.; Tresp V.; and Kriegel H.-P. A three-way model for collective learning on multi-relational data. In International Conference on Machine Learning, pages 809-816. Omnipress. 2011}
+
+\hypertarget{Yan15}{Yang B.; Yih W.-t.; He X.; Gao J.; and Deng L. Embedding entities and relations for learning and inference in knowledge bases. In Conference on Learning Representations (ICLR). 2015}
+
+\hypertarget{Bal19}{Balazevic I.; Allen C.; and Hospedales T. Multi-relational Poincaré graph embeddings. In Advances in Neural Information Processing Systems, 4465-4475. 2019}
+
+\end{document}

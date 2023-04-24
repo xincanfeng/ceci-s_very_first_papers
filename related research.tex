@@ -1,0 +1,408 @@
+\documentclass[12pt]{ctexart}
+\usepackage[T1]{fontenc}
+%\usepackage[spanish]{babel} 
+%\spanishdecimal{.}
+\usepackage[utf8]{inputenc}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{amsmath,amsthm,amsfonts,amssymb,amscd}
+\usepackage{multirow,booktabs}
+\usepackage[table]{xcolor}
+\usepackage{fullpage}
+\usepackage{lastpage}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{mathrsfs}
+\usepackage{wrapfig}
+\usepackage{setspace}
+\usepackage{calc}
+\usepackage{multicol}
+\usepackage{cancel}
+\usepackage[retainorgcmds]{IEEEtrantools}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=3cm]{geometry}
+\usepackage{floatrow}
+\DeclareMathOperator\argmin{argmin}
+\DeclareMathOperator\eg{e.g.}
+\DeclareMathOperator\ie{i.e.}
+\DeclareMathOperator\R{\mathbb{R}}
+\DeclareMathOperator\Fourier{Fourier}
+\newlength{\tabcont}
+\setlength{\parindent}{0.0in}
+\setlength{\parskip}{0.05in}
+\theoremstyle{definition}
+\newtheorem{defn}{Definición}
+\newtheorem{reg}{Regla}
+\newtheorem{ejer}{EJERCICIO}
+\pagestyle{fancyplain}
+\headheight 16pt
+\newcommand\course{link prediction}	
+\lhead{\course}
+\chead{\textbf{related researches}}
+\rhead{Xincan FENG}
+%---------------cheat sheet---------------
+%\begin{itemize}
+%\item 
+%\begin{vmatrix}
+%1& 1 & 0&0\\ 
+%0& 0 & 1&1\\ 
+%1& 0 & 1&0\\
+%0& 1 & 1&1
+%\end{vmatrix}$\\
+%\item $\vec{B}= \left\lbrace\ \begin{bmatrix}
+%1& 1\\ 
+%0& 0
+%\end{bmatrix},\begin{bmatrix}
+%0& 1\\ 
+%1& 1
+%\end{bmatrix}\right\rbrace\ $
+%\end{itemize}
+%---------------cheat sheet---------------
+\begin{document}
+\section{引言}
+\subsection{现有研究}
+Resource Description Framework (RDF)：
+从思维到自然语言到图谱，是人们对智慧的整理过程。\\
+互联网内容的大规模、异质多元、组织结构松散的特点，
+给人们有效获取信息和知识提出了挑战。
+现在的大型知识图谱以其强大的语义处理能力和开放组织能力，
+为互联网时代的知识组织和智能应用奠定了基础。
+但知识图谱能否直接帮助用户管理自己的知识呢？
+
+\subsection{本研究}
+\subsubsection{思想和想做的事}
+跨领域（包括跨语言）的重要性：\\
+从现有研究来看，我关注到了知识图谱应用的一个问题：共用还是私用？\\
+共用数据需要达到的效果侧重于：link prediction（增强搜索功能），
+kg主要在做整理知识的工作。比起用知识专家，让AI用写好的知识进行传播效率更高。\\
+私用数据则侧重于：知识抽取、表示、融合、推理，
+kg主要在做挖掘资源的工作。\\
+但比起知识专家，AI专家的作用有多少呢？
+即便AI一直在给予知识专家辅助，但知识专家永远可以指责AI专家给的知识没有用。
+除非AI脱离了人类智慧，否则这一指责永远不会失败。\\
+人类对事物及其关系的认知是个黑匣子，AI是对这个黑匣子的量化学习。
+向一个专家学习，AI或许只能成为效能为10\%的智能专家，
+但向100个专家学习，最大可达到1000\%的效能——“跨领域学习”是让AI应用强势的关键。\\
+
+强调路径而非entity的重要性：\\
+另一方面，所谓思维，就是找到解决问题最近的路。
+AI胜在可以同时考虑各种已知因素、从已知路径中找到最近的，
+人的思维在于懂得创造，如果可能的话，他们能创造出新的路——捷径。
+而在实际问题中，由于状况千变万化，大部分时候都需要这样一些“创新”。
+AI能创造“捷径”吗？\\
+现在，AI与人类的关系看起来就好像父母与孩子，
+当孩子懵懂无知时，AI提供的知识就可以让人受益匪浅，是最不偏心、偏颇的知识提供者；
+当孩子成为了专家可以独当一面时，AI所提供的知识开始显得力不从心。\\
+但AI所提供的重点不是知识本身，而是路径，AI是最好的引领者。
+将来AI和人类的关系，可以是DNA和人类的关系。
+它能将信息分割成合适的单元，对这种单元的新组合（未知信息），也有早就写好的计算法则应对，
+不断接受信息的同时，因为反应迅速而一直站在指导人类的地位。
+这对人类专家也是有好处的，顾虑周全的AI的可以让人类专家更“专”更“快”。\\
+我想提出的概念，不是知识图谱，而是知识路径。
+因为人的任何一步，都受到了细思极恐般的无限的限制：
+生命、记忆、思维能力、技能、环境……
+总的来说，就是自己的位置和各种资源总量的限制。
+这种给予本体的推理对于资源预测和挖掘即位重要。\\
+“先适应”和“最适化”的区别在于后者是计算现有条件下的最优选择，即现在的结果是最优；
+而“先适应”是指使选择做出后、下一步的结果最优。
+（但二者都属于自适应算法self-adaptive的研究）\\
+
+强调end-to-end的重要性：\\
+让数据能自我判断的空间更大，简化和优化人工操作。
+
+强调auto-structured的难点：\\
+人类脑中的世界是continous的，但语言是discrete。
+sturcture data本身是把语言更加structure化、
+强structure化，对专家而言仍然会被理解、且能节省时间，
+但对普通人而言，会使内容本身更难以被理解。\\
+理解，一部分是对文字意思但理解，更多的则是对其组成和相互作用的理解。
+前者称为语义，后者称为知识。
+机器可以很好的理解明确定义的语义，但很难理解没有明确定义的知识。\\
+一开始是不存在概念的，当区别出现后，就自然会聚类出概念以分类。
+
+\subsection{目标}
+“学以致用”，对于机器更是如此，因此，我认为以下AI应用研究很具有未来性：
+end-to-end跨领域（包括跨语言）的知识图谱构建、
+和各资源限制下的先适应知识路径提供（基于本体推理ontology reasoning）。\\
+研究的指导思想是：让自己时刻都是被需要的。\\
+我的应用目标是，能自动挖掘资源的kg：vita.\\
+1. 它是全方位的活着的人类记忆（思维，用与kg配套的立体空间space表示）。
+有这个目标的原因是，我相信总有一天，人类被虚假和针对性营销包围，
+会渴望找到和立体化自己的记忆的。那时的AI就不再只是工具和应用，而是结果和需求本身了。\\
+2. 它也是抽象但足够被人类理解的语言（kg）。
+人对entity的理解就是对物的理解，但人希望了解的其实是事，所以所谓“事”该如何表示？
+就好像DNA一样，有了单词，如何连线呢？连成线的entity，就成为了“事”。
+物是客观证据，事是人为想象，人和机器的理解（认知和表现力）会因所依据的kg不同而改变。
+即便不能比现有的自然语言更丰富多彩，但人类可以把语言这门艺术简化、或者说抽象化，
+形成一种更容易达成共识的机器语言——kg语言。
+这种语言会是编程语言和自然语言的友善过渡，也是世界通用的充满智慧的语言。
+而掌握这种语言的nlp专家，将担任未来知识的导航者、甚至是先知，
+因为未来的知识必将更加庞大而精细，超出任何人的时间限制，
+而nlp专家必须保证能领导人们拥有担任某项工作足够的知识。
+
+\subsubsection{方法}
+试图做的研究：\\
+多源抽取融合：用词向量相加和CNN两种方法分别考虑文本的拓展表示和词序信息，
+比如DKRL可以坐kbc知识融合，再比如利用跨语言优势高效学习。\\
+复杂关系表示：但不同的知识要有意义，所需的kg结构并不相同，比如树状或网状，
+所以融合手段是有限的，且最好要有机抽取融合。
+比如distant supervision, open information extraction, CNN\\
+path-infer：路径可以用来表达语义吗？
+相加、位乘、RNN哪种算法可以提高path的可靠性？目前是相加最好。
+比如path-constraint random walk, path ranking algorithm，
+path-based TransE (PTransE)利用path预测关系\\
+
+试图做的应用：\\
+制作可视化工具或算法，让embedding更直观\\
+用kg和embedding直接理解文章\\
+用kg做私人活动监视器，让人们了解自己的信息摄入状况\\
+用kg尝试做优于人类精算师的保险计算\\
+
+\section{embedding model with more rationality and interpretability}
+\subsection{learning of existing methods}
+独热表示one-hot之后，现在主要研究的是分布式表示distributed representation，
+难点在于增强实体和关系之间的联系。\\
+为便于理解和比较不同模型的想法，以下尽量采用了统一的表示方法。
+其中，map所表示的目前都是使用linear map进行计算的，
+而non-linear map的部分都用特定函数直接表示出来了。
+即我所写的map部分其实也可用matrix表示，
+之所以不写成matrix，是因为考虑到将来的研究中，
+现在的linear map也可能拓展到non-linear map,
+所以，我只特别表示出了non-linear map的部分，而其它部分则仍用map表示：
+\[\begin{array}{l}
+    entities\in \R^d\\
+    knowledge=(entities,links,triples)\\
+    triple=(head,link,tail)\\
+    triple^-=(head,link^-,tail) \bigcap (head^-,link, tail) \bigcap (head, link, tail^-)
+\end{array}\]
+
+\subsubsection{距离模型}
+structured embedding (SE)：重要缺陷：head，tail的map用两个不同的矩阵，协同性较差。
+\[\begin{array}{l}
+    map_1, map_2\in \R^{d\times d}\\
+    \begin{array}{lll}
+        link&=&{\argmin}\,distance\\
+        &=&{\argmin}\,|map_1\times head - map_2\times tail|_{L_1}\\
+    \end{array}
+\end{array}\]
+
+\subsubsection{单层神经网络模型}
+single layer model (SLM)：只增强了微弱的联系，且$\tanh$的计算复杂度高。
+\[\begin{array}{l}
+    link^T\in \R^k\\
+    map_1, map_2\in \R^{d\times k}\\
+    link={\argmin}\,link^T \times \tanh(map_1\times head+map_2 \times tail)
+\end{array}\]
+
+\subsubsection{语义匹配能量模型}
+semantic matching energy (SME):也是为了增强联系，计算更复杂了。
+\[\begin{array}{l}
+    \otimes: A_{ij}\otimes B_{ij}=\{a_{ij}\times b_{ij}\},\mathrm{Hadamard\,product}\\
+    \begin{array}{lll}
+        link&=&{\argmin}\,(map_1\times head+map_2 \times link+bias_1)^T\\
+        &&(map_3\times tail+map_4 \times link+bias_2)\\
+        link&=&{\argmin}\,(map_1\times head\otimes map_2 \times link+bias_1)^T\\
+        &&(map_3\times tail\otimes map_4 \times link+bias_2)\\
+    \end{array}
+\end{array}\]
+
+\subsubsection{双线性隐变量模型}
+Latent factor model (LFM): 协同性较好，计算复杂度低。
+\[\begin{array}{l}
+    map\in \R^{d\times d}\\
+    link={\argmin}\,head^T\times map\times tail
+\end{array}\]
+
+Dismult：计算大大减小，效果反而显著提升。
+\[\begin{array}{l}
+    map\in D^{d\times d}, \mathrm{diagonal\,matrix}
+\end{array}\]
+
+\subsubsection{张量神经网络模型}
+Neural tensor network (NTN)：这里的实体向量是该实体中所有单词向量的平均值。
+这样可以充分重复利用单词向量，降低稀疏性问题，但计算复杂度非常高，难以扩大规模。
+\[\begin{array}{l}
+    map_t \in \R^{d\times d\times k}, \mathrm{third-order \,tensor}\\
+    map_1, map_2 \in P^{d\times k}, \mathrm{projection \,matrix}\\
+    link=map^T \times \tanh(head \times map_t \times tail+map_1\times head+map_2\times tail+bias)
+\end{array}\]
+
+\subsubsection{矩阵分解模型}
+RESACL：不仅优化存在link的位置，也优化不存在link的位置。
+\[\begin{array}{l}
+    \exists\, link: head\times map \times tail=1\\
+    \nexists\, link: head\times map \times tail=0\\
+    \ie\\
+    link={\argmin}\, head\times map \times tail-1\\
+    link^-={\argmin}\, head\times map \times tail
+\end{array}\]
+
+\subsubsection{翻译模型}
+TransE：根据平移不变现象，捕捉单词之间相同的隐含语意关系，
+相当于用相对的link去解释/翻译单词。
+随机替换$triple$的人一元素以创建$triple^-$，继续考虑了错误link的情况。
+参数较少，计算复杂度低，在大规模稀疏kg上效果尤其惊人。
+因此成为以后大部分kge的基础模型。
+\[\begin{array}{l}
+    head+link=tail\\
+    \eg\\
+    C(king)-C(queen)\approx C(man)-C(woman)\\
+    \ie\\
+    link={\argmin}\, |head+link-tail|_{L_1\mathrm{or}L_2}\\
+    \mathrm{for\,further\,optimization,}\\
+    triple^-=(head,link^-,tail) \bigcap (head^-,link, tail) \bigcap (head, link, tail^-)\\
+    Link=\sum\limits_{triple} \sum\limits_{triple^-} \max (0,link-link^-+triple-triple^-)
+\end{array}\]
+
+Holographic embeddings (Hole)：让head和tail循环相关circular correlation 
+(an operator that combines the expressive power of the tensor product with the efficiency and simplicity of TranE.)
+此操作的优点：
+1）不可交换性，许多kg中的link都是不可交换的；
+2）相关性，循环相关的得到的向量每一维都限制了head和tail的某种相似性，例如第一维相当于head和tail的内积，这利于更清楚地分清比较相似的关系；
+3）计算效率高，可用快速傅里叶变换加速计算。
+\[\begin{array}{l}
+    \star: \R^d\times \R^d\rightarrow \R^d, \mathrm{circular\, correlation.}\\
+    {[head\star tail]}_k=\sum\limits_{i=0}^{d-1} head_i \times tail_{(i+k)\mod d}\\
+    \mathrm{for\,further\,optimization,}\\
+    head\star tail= \Fourier^{-1}\left(\overline{\Fourier}(head)\odot \Fourier(tail)\right)\\
+    link=\argmin \sigma (link^T(head\star tail))
+\end{array}\]
+
+TransH：处理1-N，N-1，N-N的复杂关系。如果map后存在无限个link超平面，则选取与map近似正交的link超平面。
+\[\begin{array}{l}
+    map: \mathrm{normal\, vector\, of\, head\, and\, tail}\\
+    link=\argmin |(head-map^T \times head \times map) + link - (tail-map^T \times tail \times map)|_{L_1 \mathrm{or} L_2}
+\end{array}\]
+
+TransR：使实体和关系可以map到不同的space，再在不同space中建立link。
+\[\begin{array}{l}
+    map\in \R^{d\times k}\\
+    link=\argmin |head\times map + link - tail\times map|_{L_1\mathrm{or} L_2}
+\end{array}\]
+
+CTransR：对head和tail的差进行聚类，从而将link细分成子关系$link_{child}$，每个子关系分别学习向量表示。
+\[\begin{array}{l}
+    link=\argmin |head\times map + link_{child} - tail\times map|_{L_1\mathrm{or} L_2}
+\end{array}\]
+
+TransD：认为让map仅和link有关系是不合理的，还是应该和entity有关；且TransR引入不同space导致参数急剧增加、计算复杂度大大提高。因此TransD设计了两个map，让map与entity和link都相关，同时减小计算复杂度。
+\[\begin{array}{l}
+    head_{project}, tail_{project}\in \R^d\\
+    link_{project}\in \R^k\\
+    map_{head}=link_{project} \times head_{project} +I^{d\times k}\\
+    map_{tail}=link_{project}\times tail_{project}+I^{d\times k}\\
+    link=\argmin |head\times map_{head}+link-tail\times map_{tail}|_{L_1\mathrm{or} L_2}
+\end{array}\]
+
+TranSparse：认为map和link的异质性、link之间的不平衡性是困难所在。因此定义稀疏度sparsity$\theta$，并考虑到head和tail的稀疏度不同。
+\[\begin{array}{l}
+    \theta_{\min}\in[0,1],\mathrm{hyperparameter \,of \,sparsity}\\
+    \theta=1-(1-\theta_{\min})N_{link}/N_{max link}\\
+    link=\argmin |head\times map_{head}(\theta_{head}) + link - tail\times map_{tail}(\theta_{tail})|_{L_1\mathrm{or} L_2}
+\end{array}\]
+
+TransA：认为只用$L_1$或$L_2$距离不够灵活，且entities，map和link都每一维都被等同考虑了。因此提出用马氏距离Mahalanobis distance，它是表示点与一个分布之间的距离，并让每一维学习不同的权重。
+\[\begin{array}{l}
+    map: \mathrm{weight \,matrix\, related \,to\, link}\\
+    link=(head+link-tail)^T \times map (head+link-tail)
+\end{array}\]
+
+TransG：不用子关系$link_{child}$来细分link，而将在每个情况下的link的不同都用一个高斯分布Normal distribution来表示。如此就可以按照分布区分出同一个link的不同作用（与细分成子link不同），从而减少错误预测。
+\[\begin{array}{l}
+    link=tail-head\\
+    link \sim \sum\limits_{m=1}^M \pi_{link, m} N(\mu_{link, m}, I)
+\end{array}\]
+
+KG2E：认为不论是entity还是link都是不确定的。因此用高斯分布的均值表示entity或link的center，用高斯分布的协方差表示该entity或link的不确定度。并用KL距离（不对称相似度）和期望概率（对称相似度）两种方法来判定entity和link的概率相似程度。
+\[\begin{array}{l}
+    link=head-tail\\
+    probability_{entity} \sim N (\mu_{head}-\mu_{tail}, \sum_{head}+\sum_{tail})\\
+    probability_{link} \sim N(\mu_{link},\sum_{link})\\
+    \forall l \in E\bigcup R, c_{\min} I\leq \sum_{l}\leq c_{\max} I,c_{\min}>0.\mathrm{to\, prevent\, overfitting}\\
+    \begin{array}{lll}
+        link&=&\argmin \int_{x\in \R^{k_e}} N(x;\mu_{link},\sum_{link}) \log\frac{N(x;\mu_{entity},\sum_{entity})}{N(x;\mu_{link},\sum_{link})} dx\\
+        &=&\frac{1}{2} ( tr(\sum\limits_{link}^{-1}\sum\limits_{entity})\\
+        && +(\mu_{entity}-\mu_{link})^T\sum\limits_{link}^{-1}(\mu_{entity}-\mu_{link})\\
+        && -\log\frac{\det(\sum_{entity})}{\det(\sum_{link})}+k_e)\\
+        link&=&\argmin \int_{x\in\R^{k_e}} N(x;\mu_{link},\sum_{link})N(x;\mu_{entity},\sum_{entity}) dx\\
+        &=& \frac{1}{2} ((\mu_{entity}-\mu_{link})^T(\sum_{entity}+\sum_{link})^{-1}(\mu_{entity}-\mu_{link})\\
+        && +\log(\det(\sum_{entity}+\sum_{link}))+k_e\log 2\pi)
+    \end{array}
+\end{array}\]
+ 
+\subsection{my idea and contribution}
+\subsubsection{my idea}
+enrich words representation: 
+sequential and spatial information,
+word root and it's character length\\
+本设计对relation的概念进行了调整，具体为：\\
+本设计中的图谱仅由entity和运算法则组成，而不另外规定relation，以提高协同性。
+本设计将relation看作由entity之间的运算而形成的，且分为两种，
+一种是entities之间的渐变关系，对应map运算；
+一种是entities之间的社会联系，对应link运算（就是普通kg中的relation），
+用space的共键关系来表示。\\
+由此，增强“实体与关系之间的联系”问题，
+就可以更清楚地分为探索“实体与实体之间的map计算”和“map与link之间的计算”这两个更单纯的子问题。
+
+在具体计算方面，本设计考虑了以下几点：\\
+entity：人需用名字来记住和代表一段记忆，包括受到环境限制的认知和表现\\
+实体与实体之间的map的计算关键是：认知、表现和环境限制\\
+map与link之间的计算关键是：map和link同处在一个环境限制中\\
+那么问题就来了：
+要证明map和link的环境限制相同的话，得将二者表示出来，然后发现其中的关系。
+但如果想直接认为二者的环境限制相同（而不加以证明）的话，
+就应该将二者直接嵌合在一个模型中表示出来，进行embedding的学习。
+如此学习到的embedding不仅可以应用于通俗文章，
+也可以灵活应对各种话题、场景、专业性等环境限制的文章。
+本文想做的事是后者。\\
+
+距离就算一样，方向也会不一样。
+所以map和link不能只看数量关系，也必须看spatial关系。\\
+spatial关系一半用map中的hyper space来表示，另一半则用link中的probability表示。
+不同的词语所面临的environmental restriction不同会导致用词的概率分布不同。\\
+将topic model按照environmental restriction model来应用。
+我认为二者在方法上是相通的，只是在解释性方面，我希望自己能把它的概念描述得更准确。
+不同的是topic强调的是可能会出现的词语的概率，
+而我想考虑的environmental restriction强调的是可能出现的词语的概率，和可能不出现的词语的概率。\\
+
+\subsubsection{my contribution}
+1. the hypothesis\\
+阐述IF图，并说明应用于各行各业时可以简化或更细化的操作。
+
+2. the notation\\
+\[\begin{array}{l}
+knowledge=(entities,+,\times)\\
+university=(dstudent+dteacher)=(denglish+djapanese)\times map\\
+\end{array}\]
+
+\[\begin{array}{l}
+p(y|x)=\frac{p(x|y)p(y)}{p(x)}\sim p(x|y)p(y)
+\end{array}\]
+
+3. the link concept\\
+从过去到现在、从现有到将来的过渡关系。
+
+\[\begin{array}{l}
+(head_1, link_1, tail_1)\\
+(head_2, link_2, tail_2)\\
+
+head_1\times map_1\times map\times map_2=tail_1\\
+map=\frac{tail_1}{head_1\times map_1\times map_2}\\
+link_1=\tanh(map)\\
+
+head_2\times map_2\times map\times map_1=tail_2\\
+map=\frac{tail_2}{head_2\times map_2\times map_1}\\
+link_2=\tanh(map)\\
+
+link=(1-\alpha)\times link_1+\alpha\times link_2
+\end{array}\]
+
+$head_i,tail_i,map_i,link_i$ have consistency\\
+$map$ in a single dataset has consistency\\
+
+$\exists link:$\\
+$head_1\times map_1\times tail_1=1$\\
+$head_1\times map_1\times map\times tail_1=1$\\
+$head_1\times map_1\times map\times map_2\times tail_1=1$\\
+$\nexists link:$\\
+$[1,512] [512, 512] [512, 512] [512, 512] [512,1]$
+\end{document}
